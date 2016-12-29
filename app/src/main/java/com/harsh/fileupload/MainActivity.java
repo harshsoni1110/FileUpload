@@ -1,16 +1,24 @@
 package com.harsh.fileupload;
 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.harsh.fileupload.Beans.Contributors;
 import com.harsh.fileupload.HTTPService.FileService;
 import com.harsh.fileupload.HTTPService.GitHubContributorsService;
 import com.harsh.fileupload.ServiceGenerators.ServiceGenerator;
+import com.harsh.fileupload.Services.UploadService;
 
 import org.w3c.dom.Text;
 
@@ -34,37 +42,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private  static String TAG = MainActivity.class.getName();
+    TextView text;
     private static OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder();
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null){
+                String output = bundle.getString("Output");
+                Log.d("MAINACTIVTY",output);
+                Toast.makeText(MainActivity.this,"Upload Result",Toast.LENGTH_LONG).show();
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final TextView textView = (TextView)findViewById(R.id.txtTest);
-        GitHubContributorsService service = ServiceGenerator.createService(GitHubContributorsService.class);
-        Call<String> call = service.getContributors();
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                //okhttp3.Response raw = response.raw();
+        text  = (TextView) findViewById(R.id.txtTest);
 
-                if (response.isSuccessful()){
-                    String str = response.body().toString();
-                    //textView.setText(str);
-                    Log.d("STRT",str);
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.d("ERROR ---------------", t.toString());
-               // textView.setText(t.toString());
-            }
-        });
-
-        textView.setText(Environment.getExternalStorageDirectory().getAbsolutePath());
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download-512.png");
-        uploadFile(Uri.fromFile(file));
 /*
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
@@ -117,28 +113,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private  void uploadFile (Uri fileUri){
-        final TextView text = (TextView) findViewById(R.id.txtTest);
-        FileService fileService = ServiceGenerator.createService(FileService.class);
+    public void clickHandler(View view) {
 
-        File file = new File(fileUri.getPath());
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("fileToUpload",file.getName(), requestFile);
+        Intent i = new Intent(this, UploadService.class);
+        i.putExtra("KEY1","Value");
+        startService(i);
+        text.setText ("Service Started");
+    }
 
-        String descriptionString = "Hello this is description speaking";
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
-        Call <ResponseBody> call = fileService.upload(description,body);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                text.setText(response.message());
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                text.setText("Failed upload.");
-            }
-        });
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*registerReceiver(receiver, new IntentFilter(
+                UploadService.NOTIFICATION));*/
     }
 }
