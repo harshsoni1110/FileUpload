@@ -71,32 +71,36 @@ public class UploadService extends IntentService {
         Intent notificationIntent = new Intent(this, UploadService.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle("Notification Title")
-                .setContentText("Notification Message")
-                .setSmallIcon(R.drawable.download_image)
-                .setContentIntent(pendingIntent)
-                .setTicker("Ticket text")
-                .build();
 
-        startForeground(1, notification);
         //final TextView text = (TextView) findViewById(R.id.txtTest);
 
         FileService fileService = ServiceGenerator.createService(FileService.class);
+        Response<ResponseBody> response = null;
+        for (int i = 0 ; i < 5 ; i++){
+            Notification notification = new Notification.Builder(this)
+                    .setContentTitle("Notification Title")
+                    .setContentText((i+1)+"/5")
+                    .setSmallIcon(R.drawable.download_image)
+                    .setContentIntent(pendingIntent)
+                    .setTicker("Ticket text")
+                    .build();
 
-        File file = new File(fileUri.getPath());
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("fileToUpload",file.getName(), requestFile);
+            startForeground(1, notification);
+            File file = new File(fileUri.getPath());
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("fileToUpload",file.getName(), requestFile);
 
-        String descriptionString = "Hello this is description speaking";
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
-        Call<ResponseBody> call = fileService.upload(description,body);
-        Response<ResponseBody> response = call.execute();
-        if (response.isSuccessful()){
-            Log.d("UPLOAD SERVICE","SUCCESS");
-        }
-        else {
-            Log.d("UPLOAD SERVICE","FAILED");
+            String descriptionString = "Hello this is description speaking";
+            RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+            Call<ResponseBody> call = fileService.upload(description,body);
+            response = call.execute();
+            if (response.isSuccessful()){
+                Log.d("UPLOAD SERVICE","SUCCESS");
+            }
+            else {
+                Log.d("UPLOAD SERVICE","FAILED");
+            }
+
         }
         //ResponseBody responseBody = call.execute().body();
 
