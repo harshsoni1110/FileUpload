@@ -1,19 +1,23 @@
-package com.harsh.fileupload.LoginScreen;
+package com.harsh.fileupload.Login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.harsh.fileupload.LoginScreen.LoginScreenView.LoginViewScreen;
+import com.harsh.fileupload.R;
 
 /**
  * Created by harsh on 31/12/16.
  */
 
-public class LoginActivity extends AppCompatActivity implements LoginViewScreen {
+public class LoginActivity extends AppCompatActivity implements LoginScreen.view{
+
+    LoginPresenter presenter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.login_screen);
+        presenter = new LoginPresenter(LoginActivity.this);
     }
 
     @Override
