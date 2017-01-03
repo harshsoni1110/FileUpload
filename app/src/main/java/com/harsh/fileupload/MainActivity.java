@@ -35,7 +35,7 @@ import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  static String TAG = MainActivity.class.getName();
+/*    private  static String TAG = MainActivity.class.getName();
     TextView text;
     private static OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder();
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -48,13 +48,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"Upload Result",Toast.LENGTH_LONG).show();
             }
         }
-    };
+    };*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        text  = (TextView) findViewById(R.id.txtTest);
-
+ /*       text  = (TextView) findViewById(R.id.txtTest);
+*/
 /*
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
@@ -109,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickHandler(View view) {
 
-        Intent i = new Intent(this, UploadService.class);
+  /*      Intent i = new Intent(this, UploadService.class);
         i.putExtra("KEY1","Value");
         startService(i);
-        text.setText ("Service Started");
+        text.setText ("Service Started");*/
     }
 
 

@@ -19,9 +19,16 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/txtPassword" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/txtConfirmPassword" />
 
     <Button
-        android:text="Sign in"
+        android:text="Sign Up"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,15 +43,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="Click here to "/>
+            android:text="Already have an account? Click here to "/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/signUpMessage"
             android:layout_toEndOf="@id/signUpMessage"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="Signup"
-            android:onClick="goToSignUp"/>
+            android:text="Sign in"/>
     </RelativeLayout>
 
 </LinearLayout>
