@@ -17,11 +17,16 @@ import com.harsh.fileupload.R;
  * Created by harsh on 3/1/17.
  */
 
-public class LoginFragment extends Fragment {
+public class SignupFragment extends Fragment {
 
     public static final String TAG = LoginFragment.class.getName();
-    CallBacksLoginFragment mCallBackListener;
-    public LoginFragment() {
+    CallBacksSignupFragment mCallBackListener;
+
+    public interface CallBacksSignupFragment {
+        public void showLogin();
+    }
+
+    public SignupFragment() {
         super();
     }
 
@@ -36,7 +41,7 @@ public class LoginFragment extends Fragment {
         super.onAttach(context);
         Log.d(TAG,"ATTACHING LOGIN FRAGMENT");
         try {
-            mCallBackListener = (CallBacksLoginFragment)context;
+            mCallBackListener = (CallBacksSignupFragment) context;
         }
         catch (ClassCastException castException){
 
@@ -52,7 +57,7 @@ public class LoginFragment extends Fragment {
         super.onAttach(activity);
         Log.d(TAG,"ATTACHING LOGIN FRAGMENT");
         try {
-            mCallBackListener = (CallBacksLoginFragment)activity;
+            mCallBackListener = (CallBacksSignupFragment) activity;
         }
         catch (ClassCastException castException){
 
@@ -66,13 +71,12 @@ public class LoginFragment extends Fragment {
 
     }
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View loginLayout = inflater.inflate(R.layout.login_screen,container,false);
-        Button btnSignUp = (Button)loginLayout.findViewById(R.id.signUpButton);
+        View loginLayout = inflater.inflate(R.layout.singup_layout,container,false);
+        Button btnSignUp = (Button)loginLayout.findViewById(R.id.btnSignup);
         btnSignUp.setOnClickListener(new ClickHandler());
         return loginLayout;
 
@@ -98,16 +102,11 @@ public class LoginFragment extends Fragment {
         super.onDestroy();
     }
 
-
-
     @Override
     public void onResume() {
         super.onResume();
     }
 
-    public interface CallBacksLoginFragment {
-        public void showSignup();
-    }
     class ClickHandler implements View.OnClickListener {
 
         /**
@@ -119,9 +118,9 @@ public class LoginFragment extends Fragment {
         public void onClick(View v) {
 
             switch (v.getId()){
-                case R.id.signUpButton:
+                case R.id.btnSignup:
                     if (mCallBackListener != null){
-                        mCallBackListener.showSignup();
+                        mCallBackListener.showLogin();
                     }
                     break;
                 default:
