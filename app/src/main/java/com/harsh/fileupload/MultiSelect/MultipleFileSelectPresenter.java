@@ -9,6 +9,7 @@ import android.util.Log;
 import com.harsh.fileupload.ServiceGenerators.ServiceGenerator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import okhttp3.MediaType;
@@ -72,9 +73,9 @@ public class MultipleFileSelectPresenter implements MultipleFileSelectScreen.pre
     MultipleFileSelectPresenter(){
         Log.d(TAG,"Constructing files");
         listFiles = new ArrayList<String>();
-        listFiles.add (Environment.getExternalStorageDirectory().getAbsolutePath()+"/File_Contribute1.png");
-        listFiles.add (Environment.getExternalStorageDirectory().getAbsolutePath()+"/download.png");
-        listFiles.add (Environment.getExternalStorageDirectory().getAbsolutePath()+"/log.txt");
+        listFiles.add (Environment.getExternalStorageDirectory().getAbsolutePath()+"/img_grp.jpg");
+        listFiles.add (Environment.getExternalStorageDirectory().getAbsolutePath()+"/fb.png");
+
         if (listFiles.size() > 0){
             listFilesUri = new ArrayList<Uri>();
         }
@@ -95,7 +96,7 @@ public class MultipleFileSelectPresenter implements MultipleFileSelectScreen.pre
     }
 
     @Override
-    public void uploadSelectedFiles() {
+    public void uploadSelectedFiles() throws IOException {
         Log.d(TAG,"File uploading starting");
         Response <ResponseBody> response = null;
         if (mNumberOfFiles > 0){
@@ -109,13 +110,17 @@ public class MultipleFileSelectPresenter implements MultipleFileSelectScreen.pre
         stopUploading();
     }
 
-    synchronized void uploadFile (File file){
+    synchronized void uploadFile (File file) throws IOException {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("fileToUpload",file.getName(), requestFile);
 
         String descriptionString = "Hello this is description speaking";
         RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
         Call<ResponseBody> call = mFileService.upload(description,body);
+        call.execute();
+        mFileUpdateListner.postUpdate(++mNumberOfFilesUploaded);
+
+/*
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -135,6 +140,7 @@ public class MultipleFileSelectPresenter implements MultipleFileSelectScreen.pre
                 Log.d(TAG,"Upload failed");
             }
         });
+*/
 
     }
     @Override

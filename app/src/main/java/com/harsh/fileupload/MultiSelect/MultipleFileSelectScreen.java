@@ -1,5 +1,7 @@
 package com.harsh.fileupload.MultiSelect;
 
+import java.io.IOException;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -19,7 +21,7 @@ public interface MultipleFileSelectScreen {
     }
     public interface presenter{
         public void processSelectedFiles();
-        public void uploadSelectedFiles ();
+        public void uploadSelectedFiles () throws IOException;
         public int getTotalFiles ();
         public int getStatusOfFile();
         public int getUploadStatus();

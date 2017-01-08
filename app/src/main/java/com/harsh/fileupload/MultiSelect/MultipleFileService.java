@@ -1,12 +1,18 @@
 package com.harsh.fileupload.MultiSelect;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.harsh.fileupload.R;
+
+import java.io.IOException;
 
 /**
  * Created by harsh on 7/1/17.
@@ -15,9 +21,13 @@ import android.util.Log;
 public class MultipleFileService extends IntentService implements MultipleFileSelectPresenter.postFileUploadUpdate {
 
     private static final String TAG = MultipleFileService.class.getName();
+    private static final int NOTIFICATION_ID = 1;
     private MultipleFileSelectPresenter mPrsenter = null;
     private int mNumberOfFiles = 0;
-    private int mFilesUploaded = -1;
+    private int mFilesUploaded = 1;
+    private Intent notificationIntent= null;
+    private PendingIntent pendingIntent = null;
+    Notification notification = null;
     public MultipleFileService (){
 
         super("MultipleFileService");
@@ -44,7 +54,19 @@ public class MultipleFileService extends IntentService implements MultipleFileSe
         if (mPrsenter != null){
             mNumberOfFiles = mPrsenter.getTotalFiles();
             mPrsenter.processSelectedFiles();
-            mPrsenter.uploadSelectedFiles();
+            notification = new Notification.Builder(this)
+                    .setContentTitle("Notification Title")
+                    .setContentText((mFilesUploaded)+"/"+mNumberOfFiles)
+                    .setSmallIcon(R.drawable.download_image)
+                    .setContentIntent(pendingIntent)
+                    .setTicker("Ticket text")
+                    .build();
+            startForeground(NOTIFICATION_ID, notification);
+            try {
+                mPrsenter.uploadSelectedFiles();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -53,6 +75,9 @@ public class MultipleFileService extends IntentService implements MultipleFileSe
         super.onStart(intent, startId);
         mPrsenter = intent.getParcelableExtra(MultipleFileActivity.PRESENTER_TAG);
         mPrsenter.setmFileUpdateListner(this);
+        notificationIntent = new Intent(this,MultipleFileService.class);
+        pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
+
     }
 
     @Override
@@ -68,6 +93,14 @@ public class MultipleFileService extends IntentService implements MultipleFileSe
 
     public void notifyUser (){
         //Update progress bar here in notification
+        notification = new Notification.Builder(this)
+                .setContentTitle("Notification Title")
+                .setContentText((mFilesUploaded)+"/"+mNumberOfFiles)
+                .setSmallIcon(R.drawable.download_image)
+                .setContentIntent(pendingIntent)
+                .setTicker("Ticket text")
+                .build();
+   //     startForeground(NOTIFICATION_ID,notification);
         Log.d(TAG,"Notifying update");
     }
 }
