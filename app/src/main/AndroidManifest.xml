@@ -11,12 +11,15 @@
 
         <service android:name=".Services.UploadService"
             android:label="Service Upload">
-
+        </service>
+        <service android:name=".MultiSelect.MultipleFileService" android:label="MultipleFileUpload">
         </service>
         <activity android:name=".MainActivity">
 
         </activity>
         <activity android:name=".Login.LoginActivity">
+        </activity>
+        <activity android:name=".MultiSelect.MultipleFileActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
